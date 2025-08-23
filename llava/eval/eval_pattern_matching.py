@@ -141,7 +141,7 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1):
             question_text += f"\nD) {q['option_D']}"
         
         # Add answer format instruction
-        question_text += ""
+        question_text += "\n\nYou may only choose ONE of the options (A, B, C, or D)."
         
         formatted_q = {
             'question_id': q['question_id'],
