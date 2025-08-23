@@ -27,7 +27,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
     if 'llava' in model_name.lower():
         # Load LLaVA model
             if 'mistral' in model_name.lower():
-                tokenizer = AutoTokenizer.from_pretrained(model_path)
+                tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
                 model = LlavaMistralForCausalLM.from_pretrained(
                     model_path,
                     low_cpu_mem_usage=False,

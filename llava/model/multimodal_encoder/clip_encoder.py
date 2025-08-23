@@ -20,10 +20,29 @@ class CLIPVisionTower(nn.Module):
             self.cfg_only = CLIPVisionConfig.from_pretrained(self.vision_tower_name)
 
     def load_model(self):
-        self.image_processor = CLIPImageProcessor.from_pretrained(self.vision_tower_name)
-        self.vision_tower = CLIPVisionModel.from_pretrained(self.vision_tower_name)
+        import os
+        # Set environment variables to avoid network issues
+        os.environ['HF_HUB_DISABLE_PROGRESS_BARS'] = '1'
+        os.environ['TRANSFORMERS_CACHE'] = os.path.expanduser('~/.cache/huggingface/transformers')
+        
+        try:
+            self.image_processor = CLIPImageProcessor.from_pretrained(
+                self.vision_tower_name,
+                cache_dir=os.path.expanduser('~/.cache/huggingface/transformers'),
+                local_files_only=False,
+                resume_download=True
+            )
+            self.vision_tower = CLIPVisionModel.from_pretrained(
+                self.vision_tower_name,
+                cache_dir=os.path.expanduser('~/.cache/huggingface/transformers'),
+                local_files_only=False,
+                resume_download=True
+            )
+        except Exception as e:
+            print(f"Error loading CLIP model {self.vision_tower_name}: {e}")
+            raise e
+            
         self.vision_tower.requires_grad_(False)
-
         self.is_loaded = True
 
     def feature_select(self, image_forward_outs):
