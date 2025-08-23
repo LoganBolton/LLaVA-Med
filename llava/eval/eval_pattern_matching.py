@@ -7,6 +7,7 @@ import re
 from tqdm import tqdm
 import shortuuid
 from pathlib import Path
+import difflib
 
 from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 from llava.conversation import conv_templates, SeparatorStyle
@@ -21,35 +22,59 @@ from transformers import set_seed, logging
 logging.set_verbosity_error()
 
 
+def str_similarity(str1, str2):
+    seq = difflib.SequenceMatcher(None, str1, str2)
+    return seq.ratio()
+ 
+def find_most_similar_index(str_list, target_str):
+    """
+    Given a list of strings and a target string, returns the index of the most similar string in the list.
+    """
+    # Initialize variables to keep track of the most similar string and its index
+    most_similar_str = None
+    most_similar_index = None
+    highest_similarity = 0
+    
+    # Iterate through each string in the list
+    for i, str in enumerate(str_list):
+        # Calculate the similarity between the current string and the target string
+        similarity = str_similarity(str, target_str)
+        
+        # If the current string is more similar than the previous most similar string, update the variables
+        if similarity > highest_similarity:
+            most_similar_str = str
+            most_similar_index = i
+            highest_similarity = similarity
+    
+    # Return the index of the most similar string
+    return most_similar_index
+
+
 def extract_multiple_choice_answer(response_text, options=['A', 'B', 'C', 'D']):
     """
-    Extract multiple choice answer from model response using rule-based pattern matching.
-    
-    Args:
-        response_text (str): The model's response text
-        options (list): List of valid option letters
-    
-    Returns:
-        str: Extracted answer letter or None if no clear answer found
+    Extract multiple choice answer from model response using pattern matching from model_med_eval.py.
     """
     if not response_text:
         return None
     
-    # Clean the response text
     response_text = response_text.strip()
     
-    # Pattern 1: Direct answer patterns like "The answer is A", "Answer: B", etc.
+    # Pattern 1: Look for {A}, {B}, etc. (curly brackets format)
+    bracket_pattern = r'\{([A-D])\}'
+    match = re.search(bracket_pattern, response_text, re.IGNORECASE)
+    if match:
+        answer = match.group(1).upper()
+        if answer in options:
+            return answer
+    
+    # Pattern 2: Direct answer patterns
     answer_patterns = [
         r'(?:the\s+)?answer\s+is\s+([A-D])',
         r'answer\s*[:]\s*([A-D])',
-        r'(?:option\s+)?([A-D])\s+is\s+(?:the\s+)?correct',
-        r'correct\s+(?:answer\s+is\s+)?(?:option\s+)?([A-D])',
         r'therefore[,\s]*(?:the\s+answer\s+is\s+)?([A-D])',
-        r'so[,\s]*(?:the\s+answer\s+is\s+)?([A-D])',
-        r'thus[,\s]*(?:the\s+answer\s+is\s+)?([A-D])',
+        r'corresponds\s+to\s+(?:option\s+)?([A-D])',
     ]
     
-    # Check for direct answer patterns (case insensitive)
     for pattern in answer_patterns:
         match = re.search(pattern, response_text, re.IGNORECASE)
         if match:
@@ -57,7 +82,7 @@ def extract_multiple_choice_answer(response_text, options=['A', 'B', 'C', 'D']):
             if answer in options:
                 return answer
     
-    # Pattern 2: Look for isolated letters with context
+    # Pattern 3: Look for isolated letters with context
     isolated_patterns = [
         r'\b([A-D])\)',  # "A)", "B)", etc.
         r'\(([A-D])\)',  # "(A)", "(B)", etc.
@@ -68,41 +93,10 @@ def extract_multiple_choice_answer(response_text, options=['A', 'B', 'C', 'D']):
     for pattern in isolated_patterns:
         matches = re.findall(pattern, response_text, re.IGNORECASE)
         if matches:
-            # Take the last match as it's often the final answer
             answer = matches[-1].upper()
             if answer in options:
                 return answer
     
-    # Pattern 3: Look for single letters that appear at the end or beginning
-    # Check end of response for single letter
-    end_match = re.search(r'\b([A-D])\s*$', response_text, re.IGNORECASE)
-    if end_match:
-        answer = end_match.group(1).upper()
-        if answer in options:
-            return answer
-    
-    # Check beginning of response for single letter
-    start_match = re.search(r'^([A-D])\b', response_text, re.IGNORECASE)
-    if start_match:
-        answer = start_match.group(1).upper()
-        if answer in options:
-            return answer
-    
-    # Pattern 4: Count occurrences of each option and pick the most frequent
-    option_counts = {}
-    for option in options:
-        # Count how many times each option appears in various contexts
-        count = len(re.findall(r'\b' + option + r'\b', response_text, re.IGNORECASE))
-        option_counts[option] = count
-    
-    # If one option appears significantly more than others, return it
-    max_count = max(option_counts.values())
-    if max_count > 0:
-        most_frequent = [opt for opt, count in option_counts.items() if count == max_count]
-        if len(most_frequent) == 1:
-            return most_frequent[0]
-    
-    # If no clear answer found, return None
     return None
 
 
@@ -146,6 +140,9 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1):
         if 'option_D' in q:
             question_text += f"\nD) {q['option_D']}"
         
+        # Add answer format instruction
+        question_text += ""
+        
         formatted_q = {
             'question_id': q['question_id'],
             'image': os.path.relpath(image_path, image_base_path),
@@ -163,9 +160,37 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1):
     return formatted_questions
 
 
+def MedicalEval(pred_dict: list) -> tuple:
+    """
+    Evaluate medical predictions using string similarity matching (from model_med_eval.py).
+    """
+    tot = len(pred_dict)
+    succ = 0
+    for data in pred_dict:
+        try:
+            a, b, c, d = data.get('option_A'), data.get('option_B'), data.get('option_C'), data.get('option_D')
+            answer_list = [a, b]
+            if c is not None:
+                answer_list.append(c)
+            if d is not None:
+                answer_list.append(d)
+            
+            most_similar_idx = find_most_similar_index(answer_list, data['model_pred'])
+            if most_similar_idx is not None and answer_list[most_similar_idx] == data['gt_answer']:
+                succ += 1
+                data['is_correct'] = 'yes'
+            else:
+                data['is_correct'] = 'no'
+        except Exception as e:
+            # If there's an error, mark as incorrect
+            data['is_correct'] = 'no'
+        
+    return pred_dict, succ/tot
+
+
 def evaluate_accuracy(predictions_file, questions):
     """
-    Calculate accuracy by comparing extracted answers with ground truth.
+    Calculate accuracy using the similarity-based approach from model_med_eval.py.
     
     Args:
         predictions_file (str): Path to file with model predictions
@@ -174,41 +199,52 @@ def evaluate_accuracy(predictions_file, questions):
     Returns:
         dict: Evaluation results
     """
-    # Load predictions
+    # Load predictions and keep original data for prompts
     predictions = {}
+    pred_dict = []
+    
     with open(predictions_file, 'r') as f:
         for line in f:
             pred = json.loads(line.strip())
             predictions[pred['question_id']] = pred
+            
+            # Find the corresponding question data
+            question_data = next((q for q in questions if q['question_id'] == pred['question_id']), None)
+            if question_data:
+                eval_data = {
+                    'question_id': pred['question_id'],
+                    'model_pred': pred['text'],
+                    'gt_answer': question_data['gt_answer'],
+                    'option_A': question_data['options']['A'],
+                    'option_B': question_data['options']['B'],
+                    'option_C': question_data['options']['C'],
+                    'option_D': question_data['options']['D']
+                }
+                pred_dict.append(eval_data)
     
-    # Create ground truth mapping
-    gt_mapping = {q['question_id']: q['gt_answer'] for q in questions}
+    # Use MedicalEval to calculate accuracy
+    evaluated_pred_dict, accuracy = MedicalEval(pred_dict)
     
-    correct = 0
-    total = 0
+    # Convert to the expected return format
     detailed_results = []
+    correct = 0
+    total = len(evaluated_pred_dict)
     
-    for q_id, gt_answer in gt_mapping.items():
-        if q_id in predictions:
-            pred_data = predictions[q_id]
-            model_response = pred_data['text']
-            extracted_answer = extract_multiple_choice_answer(model_response)
+    for data in evaluated_pred_dict:
+        is_correct = data['is_correct'] == 'yes'
+        if is_correct:
+            correct += 1
             
-            is_correct = extracted_answer == gt_answer
-            if is_correct:
-                correct += 1
-            
-            detailed_results.append({
-                'question_id': q_id,
-                'gt_answer': gt_answer,
-                'extracted_answer': extracted_answer,
-                'model_response': model_response,
-                'correct': is_correct
-            })
-            
-            total += 1
-    
-    accuracy = correct / total if total > 0 else 0
+        # Get the prompt from original predictions
+        prompt = predictions.get(data['question_id'], {}).get('prompt', '')
+        
+        detailed_results.append({
+            'question_id': data['question_id'],
+            'prompt': prompt,
+            'gt_answer': data['gt_answer'],
+            'model_response': data['model_pred'],
+            'correct': is_correct
+        })
     
     return {
         'accuracy': accuracy,

@@ -18,7 +18,8 @@ mkdir -p eval_results
 # Set environment variables to avoid download issues
 export HF_HUB_DISABLE_TELEMETRY=1
 export TRANSFORMERS_OFFLINE=0
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=1,0
+export PYTHONPATH="/home/log/Github/LLaVA-Med:$PYTHONPATH"
 
 # Run evaluation
 echo "Starting OmniMedVQA Chest CT Scan evaluation..."
@@ -33,6 +34,6 @@ python llava/eval/eval_pattern_matching.py \
     --answers-file "$OUTPUT_FILE" \
     --sample-ratio $SAMPLE_RATIO \
     --conv-mode "vicuna_v1" \
-    --temperature 0.2
+    --temperature 0.0
 
 echo "Evaluation complete! Check results in eval_results/ directory."
