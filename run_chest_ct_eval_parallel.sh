@@ -6,9 +6,11 @@
 # Configuration
 MODEL_PATH="/home/log/Github/llava-med-v1.5-mistral-7b"
 IMAGE_FOLDER="data/OmniMedVQA"
-QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan.json"
-OUTPUT_FILE="eval_results/chest_ct_results.jsonl"
-SAMPLE_RATIO=0.03
+# QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan.json"
+QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan_augmented.json"
+# OUTPUT_FILE="eval_results/chest_ct_results.jsonl"
+OUTPUT_FILE="eval_results/chest_ct_results_zoom.jsonl"
+SAMPLE_RATIO=1.0
 
 # Calculate dataset split points
 echo "Calculating dataset split for parallel processing..."
@@ -65,17 +67,26 @@ wait
 
 echo "Merging results from both GPUs..."
 
+# Generate file names based on OUTPUT_FILE
+BASE_NAME=$(basename "$OUTPUT_FILE" .jsonl)
+DIR_NAME=$(dirname "$OUTPUT_FILE")
+GPU0_FILE="${DIR_NAME}/${BASE_NAME}_gpu0.jsonl"
+GPU1_FILE="${DIR_NAME}/${BASE_NAME}_gpu1.jsonl"
+EVAL0_FILE="${DIR_NAME}/${BASE_NAME}_evaluation_gpu0.json"
+EVAL1_FILE="${DIR_NAME}/${BASE_NAME}_evaluation_gpu1.json"
+MERGED_EVAL_FILE="${DIR_NAME}/${BASE_NAME}_evaluation.json"
+
 # Merge the output files
-cat eval_results/chest_ct_results_gpu0.jsonl eval_results/chest_ct_results_gpu1.jsonl > "$OUTPUT_FILE"
+cat "$GPU0_FILE" "$GPU1_FILE" > "$OUTPUT_FILE"
 
 # Merge evaluation results
 python -c "
 import json
 
 # Load individual evaluation results
-with open('eval_results/chest_ct_results_evaluation_gpu0.json', 'r') as f:
+with open('$EVAL0_FILE', 'r') as f:
     eval0 = json.load(f)
-with open('eval_results/chest_ct_results_evaluation_gpu1.json', 'r') as f:
+with open('$EVAL1_FILE', 'r') as f:
     eval1 = json.load(f)
 
 # Merge results
@@ -92,17 +103,17 @@ merged_results = {
 }
 
 # Save merged evaluation
-with open('eval_results/chest_ct_results_evaluation.json', 'w') as f:
+with open('$MERGED_EVAL_FILE', 'w') as f:
     json.dump(merged_results, f, indent=2)
 
 print(f'Combined Results: {total_correct}/{total_questions} = {merged_accuracy:.3f}')
 "
 
 # Clean up individual files
-rm eval_results/chest_ct_results_gpu0.jsonl
-rm eval_results/chest_ct_results_gpu1.jsonl
-rm eval_results/chest_ct_results_evaluation_gpu0.json
-rm eval_results/chest_ct_results_evaluation_gpu1.json
+rm "$GPU0_FILE" "$GPU1_FILE" "$EVAL0_FILE" "$EVAL1_FILE"
 
-echo "Parallel evaluation complete! Results merged to: $OUTPUT_FILE"
-echo "Merged evaluation saved to: eval_results/chest_ct_results_evaluation.json"
+# Clean up merged results file, keep only evaluation
+rm "$OUTPUT_FILE"
+
+echo "Parallel evaluation complete! Results cleaned up."
+echo "Merged evaluation saved to: $MERGED_EVAL_FILE"
