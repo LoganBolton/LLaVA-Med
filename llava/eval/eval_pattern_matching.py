@@ -100,7 +100,7 @@ def extract_multiple_choice_answer(response_text, options=['A', 'B', 'C', 'D']):
     return None
 
 
-def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1):
+def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1, start_idx=None, end_idx=None):
     """
     Load and sample questions from the Chest CT Scan dataset.
     
@@ -108,6 +108,8 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1):
         data_file (str): Path to the JSON file with questions
         image_base_path (str): Base path for images
         sample_ratio (float): Ratio of data to sample (0.1 = 10%)
+        start_idx (int): Start index for dataset subset (for parallel processing)
+        end_idx (int): End index for dataset subset (for parallel processing)
     
     Returns:
         list: List of sampled questions
@@ -118,12 +120,15 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1):
     chest_ct_questions = [q for q in all_questions]
     
     random.seed(42)
-    sample_size = int(len(chest_ct_questions) * sample_ratio)
-
-    # random sampling
-    # sampled_questions = random.sample(chest_ct_questions, sample_size)
-    # first N questions
-    sampled_questions = chest_ct_questions[:sample_size]
+    
+    # Apply dataset subset if indices provided (for parallel processing)
+    if start_idx is not None and end_idx is not None:
+        chest_ct_questions = chest_ct_questions[start_idx:end_idx]
+        sampled_questions = chest_ct_questions
+    else:
+        sample_size = int(len(chest_ct_questions) * sample_ratio)
+        # first N questions
+        sampled_questions = chest_ct_questions[:sample_size]
     
     # Convert to the format expected by the evaluation script
     formatted_questions = []
@@ -267,7 +272,9 @@ def eval_model(args):
     questions = load_chest_ct_questions(
         args.question_file, 
         args.image_folder, 
-        args.sample_ratio
+        args.sample_ratio,
+        args.start_idx,
+        args.end_idx
     )
     print(f"Loaded {len(questions)} questions for evaluation")
     
@@ -281,6 +288,9 @@ def eval_model(args):
     
     # Prepare output files
     answers_file = os.path.expanduser(args.answers_file)
+    if args.process_id:
+        base, ext = os.path.splitext(answers_file)
+        answers_file = f"{base}_{args.process_id}{ext}"
     os.makedirs(os.path.dirname(answers_file), exist_ok=True)
     
     # Generate predictions
@@ -348,6 +358,9 @@ def eval_model(args):
     
     # Save evaluation results
     eval_file = args.answers_file.replace('.jsonl', '_evaluation.json')
+    if args.process_id:
+        base, ext = os.path.splitext(eval_file)
+        eval_file = f"{base}_{args.process_id}{ext}"
     with open(eval_file, 'w') as f:
         json.dump(eval_results, f, indent=2)
     
@@ -375,6 +388,12 @@ if __name__ == "__main__":
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--top_p", type=float, default=None)
     parser.add_argument("--num_beams", type=int, default=1)
+    parser.add_argument("--start-idx", type=int, default=None,
+                       help="Start index for dataset subset (for parallel processing)")
+    parser.add_argument("--end-idx", type=int, default=None,
+                       help="End index for dataset subset (for parallel processing)")
+    parser.add_argument("--process-id", type=str, default="",
+                       help="Process identifier for output files (for parallel processing)")
     
     args = parser.parse_args()
     eval_model(args)
