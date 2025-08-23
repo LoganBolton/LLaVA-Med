@@ -1,16 +1,18 @@
 #!/bin/bash
 
 # OmniMedVQA Chest CT Scan Evaluation Script
-# This script evaluates LLaVA-Med model on 10% of Chest CT Scan dataset
+# This script evaluates LLaVA-Med model on N% of Chest CT Scan dataset
 
 # Configuration
 # MODEL_PATH="/Users/log/Github/llava-med-v1.5-mistral-7b"
 
 MODEL_PATH="/home/log/Github/llava-med-v1.5-mistral-7b"
 IMAGE_FOLDER="data/OmniMedVQA"
+# QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan_augmented.json"
 QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan.json"
+# OUTPUT_FILE="eval_results/chest_ct_results_zoom.jsonl"
 OUTPUT_FILE="eval_results/chest_ct_results.jsonl"
-SAMPLE_RATIO=0.03
+SAMPLE_RATIO=0.10
 
 # Create output directory
 mkdir -p eval_results

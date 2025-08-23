@@ -115,13 +115,15 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1):
     with open(data_file, 'r') as f:
         all_questions = json.load(f)
     
-    # Filter for Chest CT Scan questions only
-    chest_ct_questions = [q for q in all_questions if q.get('dataset') == 'Chest CT Scan']
+    chest_ct_questions = [q for q in all_questions]
     
-    # Random sampling
-    random.seed(42)  # For reproducibility
+    random.seed(42)
     sample_size = int(len(chest_ct_questions) * sample_ratio)
-    sampled_questions = random.sample(chest_ct_questions, sample_size)
+
+    # random sampling
+    # sampled_questions = random.sample(chest_ct_questions, sample_size)
+    # first N questions
+    sampled_questions = chest_ct_questions[:sample_size]
     
     # Convert to the format expected by the evaluation script
     formatted_questions = []

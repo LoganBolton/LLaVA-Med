@@ -1,0 +1,140 @@
+{
+  "accuracy": 0.0,
+  "correct": 0,
+  "total": 19,
+  "detailed_results": [
+    {
+      "question_id": "Chest CT Scan_0000_zoom_1",
+      "prompt": "What imaging technique was employed for capturing this image?\nA) Angiography\nB) Electrocardiogram (ECG)\nC) Mammogram\nD) CT\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was captured using computed tomography (CT).",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0000_zoom_2",
+      "prompt": "What imaging technique was employed for capturing this image?\nA) Angiography\nB) Electrocardiogram (ECG)\nC) Mammogram\nD) CT\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was captured using computed tomography (CT).",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0000_zoom_3",
+      "prompt": "What imaging technique was employed for capturing this image?\nA) Angiography\nB) Electrocardiogram (ECG)\nC) Mammogram\nD) CT\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was captured using computed tomography (CT).",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0000_zoom_4",
+      "prompt": "What imaging technique was employed for capturing this image?\nA) Angiography\nB) Electrocardiogram (ECG)\nC) Mammogram\nD) CT\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was captured using computed tomography (CT).",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0000_zoom_5",
+      "prompt": "What imaging technique was employed for capturing this image?\nA) Angiography\nB) Electrocardiogram (ECG)\nC) Mammogram\nD) CT\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was captured using computed tomography (CT).",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0001_zoom_1",
+      "prompt": "What modality is used to capture this image?\nA) CT\nB) X-ray\nC) Nuclear medicine scan\nD) PET scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is captured using a CT (computed tomography) modality.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0001_zoom_2",
+      "prompt": "What modality is used to capture this image?\nA) CT\nB) X-ray\nC) Nuclear medicine scan\nD) PET scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is captured using a CT (computed tomography) modality.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0001_zoom_3",
+      "prompt": "What modality is used to capture this image?\nA) CT\nB) X-ray\nC) Nuclear medicine scan\nD) PET scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is captured using a CT (computed tomography) modality.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0001_zoom_4",
+      "prompt": "What modality is used to capture this image?\nA) CT\nB) X-ray\nC) Nuclear medicine scan\nD) PET scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is captured using a CT (computed tomography) modality.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0001_zoom_5",
+      "prompt": "What modality is used to capture this image?\nA) CT\nB) X-ray\nC) Nuclear medicine scan\nD) PET scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is captured using a CT (computed tomography) modality.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0002_zoom_1",
+      "prompt": "What imaging technique is employed for obtaining this image?\nA) Mammogram\nB) Positron emission tomography (PET)\nC) CT\nD) Fluoroscopy\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was obtained using a CT (computed tomography) scan.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0002_zoom_2",
+      "prompt": "What imaging technique is employed for obtaining this image?\nA) Mammogram\nB) Positron emission tomography (PET)\nC) CT\nD) Fluoroscopy\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was obtained using a CT (computed tomography) scan.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0002_zoom_3",
+      "prompt": "What imaging technique is employed for obtaining this image?\nA) Mammogram\nB) Positron emission tomography (PET)\nC) CT\nD) Fluoroscopy\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was obtained using a CT (computed tomography) scan.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0002_zoom_4",
+      "prompt": "What imaging technique is employed for obtaining this image?\nA) Mammogram\nB) Positron emission tomography (PET)\nC) CT\nD) Fluoroscopy\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was obtained using a CT (computed tomography) scan.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0002_zoom_5",
+      "prompt": "What imaging technique is employed for obtaining this image?\nA) Mammogram\nB) Positron emission tomography (PET)\nC) CT\nD) Fluoroscopy\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image was obtained using a CT (computed tomography) scan.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0003_zoom_1",
+      "prompt": "\"What imaging technique is utilized to obtain this image?\"\nA) Mammogram\nB) MRI\nC) CT\nD) Nuclear medicine scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is obtained using a CT (computed tomography) scan.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0003_zoom_2",
+      "prompt": "\"What imaging technique is utilized to obtain this image?\"\nA) Mammogram\nB) MRI\nC) CT\nD) Nuclear medicine scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is obtained using a CT (computed tomography) scan.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0003_zoom_3",
+      "prompt": "\"What imaging technique is utilized to obtain this image?\"\nA) Mammogram\nB) MRI\nC) CT\nD) Nuclear medicine scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is obtained using a CT (computed tomography) scan.",
+      "correct": false
+    },
+    {
+      "question_id": "Chest CT Scan_0003_zoom_4",
+      "prompt": "\"What imaging technique is utilized to obtain this image?\"\nA) Mammogram\nB) MRI\nC) CT\nD) Nuclear medicine scan\n\nYou may only choose ONE of the options (A, B, C, or D).",
+      "gt_answer": "CT",
+      "model_response": "The image is obtained using a CT (computed tomography) scan.",
+      "correct": false
+    }
+  ]
+}
