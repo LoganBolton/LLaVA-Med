@@ -155,6 +155,7 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1, start_
             'image': os.path.relpath(image_path, image_base_path),
             'text': question_text,
             'gt_answer': q['gt_answer'],
+            'zoom': q.get('zoom'),  # Preserve zoom metadata
             'options': {
                 'A': q.get('option_A', ''),
                 'B': q.get('option_B', ''),
@@ -198,6 +199,7 @@ def MedicalEval(pred_dict: list) -> tuple:
 def evaluate_accuracy(predictions_file, questions):
     """
     Calculate accuracy using the similarity-based approach from model_med_eval.py.
+    Handles multiple images per question ID with zoom metadata.
     
     Args:
         predictions_file (str): Path to file with model predictions
@@ -213,13 +215,38 @@ def evaluate_accuracy(predictions_file, questions):
     with open(predictions_file, 'r') as f:
         for line in f:
             pred = json.loads(line.strip())
-            predictions[pred['question_id']] = pred
             
-            # Find the corresponding question data
-            question_data = next((q for q in questions if q['question_id'] == pred['question_id']), None)
+            # Create unique key using question_id + zoom (if available)
+            question_id = pred['question_id']
+            zoom = pred.get('zoom', None)  # Handle cases where zoom might not exist
+            
+            if zoom is not None:
+                unique_key = f"{question_id}_zoom_{zoom}"
+            else:
+                unique_key = question_id
+                
+            predictions[unique_key] = pred
+            
+            # Find the corresponding question data using the same unique key logic
+            question_data = None
+            for q in questions:
+                q_id = q['question_id']
+                q_zoom = q.get('zoom', None)
+                
+                if q_zoom is not None:
+                    q_unique_key = f"{q_id}_zoom_{q_zoom}"
+                else:
+                    q_unique_key = q_id
+                    
+                if q_unique_key == unique_key:
+                    question_data = q
+                    break
+            
             if question_data:
                 eval_data = {
-                    'question_id': pred['question_id'],
+                    'question_id': unique_key,  # Use unique key as question_id
+                    'original_question_id': question_id,  # Keep original for reference
+                    'zoom': zoom,  # Keep zoom metadata
                     'model_pred': pred['text'],
                     'gt_answer': question_data['gt_answer'],
                     'option_A': question_data['options']['A'],
@@ -242,11 +269,14 @@ def evaluate_accuracy(predictions_file, questions):
         if is_correct:
             correct += 1
             
-        # Get the prompt from original predictions
-        prompt = predictions.get(data['question_id'], {}).get('prompt', '')
+        # Get the prompt from original predictions using unique key
+        unique_key = data['question_id']
+        prompt = predictions.get(unique_key, {}).get('prompt', '')
         
         detailed_results.append({
-            'question_id': data['question_id'],
+            'question_id': data['question_id'],  # This is now the unique key
+            'original_question_id': data.get('original_question_id', data['question_id']),
+            'zoom': data.get('zoom'),
             'prompt': prompt,
             'gt_answer': data['gt_answer'],
             'model_response': data['model_pred'],
@@ -344,6 +374,7 @@ def eval_model(args):
                 "text": outputs,
                 "answer_id": ans_id,
                 "model_id": model_name,
+                "zoom": line.get("zoom"),  # Preserve zoom metadata
                 "metadata": {
                     "gt_answer": line["gt_answer"],
                     "options": line["options"]
