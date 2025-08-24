@@ -148,7 +148,7 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1, start_
             question_text += f"\nD) {q['option_D']}"
         
         # Add answer format instruction
-        question_text += "\n\nYou may only choose ONE of the options (A, B, C, or D)."
+        question_text += "\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A) "
         
         formatted_q = {
             'question_id': q['question_id'],
@@ -168,9 +168,39 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1, start_
     return formatted_questions
 
 
+def normalize_text(text):
+    """
+    Normalize text by keeping only alphanumeric characters and converting to lowercase.
+    """
+    if not text:
+        return ""
+    return ''.join(char.lower() for char in text if char.isalnum() or char.isspace()).strip()
+
+def check_word_inclusion(gt_answer, model_response):
+    """
+    Check if GT answer words are included in model response for short GT answers.
+    """
+    # Normalize both texts
+    normalized_gt = normalize_text(gt_answer)
+    normalized_response = normalize_text(model_response)
+    
+    # Split GT into words and check word count
+    gt_words = normalized_gt.split()
+    
+    # Only apply word inclusion for GT answers with 4 or fewer words
+    if len(gt_words) <= 4 and len(model_response) <= 200:
+        # Check if all GT words are present in the model response
+        response_words = set(normalized_response.split())
+        gt_words_set = set(gt_words)
+        return gt_words_set.issubset(response_words)
+    
+    return False
+
 def MedicalEval(pred_dict: list) -> tuple:
     """
-    Evaluate medical predictions using string similarity matching (from model_med_eval.py).
+    Evaluate medical predictions using improved pattern matching.
+    For GT answers <= 4 words, checks if GT words are included in model response.
+    Falls back to similarity matching for longer GT answers.
     """
     tot = len(pred_dict)
     succ = 0
@@ -183,12 +213,21 @@ def MedicalEval(pred_dict: list) -> tuple:
             if d is not None:
                 answer_list.append(d)
             
-            most_similar_idx = find_most_similar_index(answer_list, data['model_pred'])
-            if most_similar_idx is not None and answer_list[most_similar_idx] == data['gt_answer']:
+            gt_answer = data['gt_answer']
+            model_pred = data['model_pred']
+            
+            # First try word inclusion matching for short GT answers
+            if check_word_inclusion(gt_answer, model_pred):
                 succ += 1
                 data['is_correct'] = 'yes'
             else:
-                data['is_correct'] = 'no'
+                # Fall back to similarity matching
+                most_similar_idx = find_most_similar_index(answer_list, model_pred)
+                if most_similar_idx is not None and answer_list[most_similar_idx] == gt_answer:
+                    succ += 1
+                    data['is_correct'] = 'yes'
+                else:
+                    data['is_correct'] = 'no'
         except Exception as e:
             # If there's an error, mark as incorrect
             data['is_correct'] = 'no'

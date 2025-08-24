@@ -3,8 +3,7 @@
 Analyze evaluation results to compute average accuracy per zoom level.
 """
 import json
-import argparse
-from collections import defaultdict, Counter
+from collections import defaultdict
 
 def analyze_zoom_accuracy(*results_files):
     """
@@ -18,8 +17,7 @@ def analyze_zoom_accuracy(*results_files):
         dict: Analysis results including per-zoom accuracy and summary
     """
     # Group results by zoom level
-    zoom_stats = defaultdict(lambda: {'correct': 0, 'total': 0, 'results': []})
-    total_accuracy_weighted = 0.0
+    zoom_stats = defaultdict(lambda: {'correct': 0, 'total': 0})
     total_correct_all = 0
     total_count_all = 0
     
@@ -35,13 +33,11 @@ def analyze_zoom_accuracy(*results_files):
             # Parallel processing results
             all_results.extend(results['gpu0_results']['detailed_results'])
             all_results.extend(results['gpu1_results']['detailed_results'])
-            file_accuracy = results.get('accuracy', 0.0)
             file_correct = results.get('correct', 0)
             file_count = results.get('total', 0)
         else:
             # Single processing results
             all_results = results.get('detailed_results', [])
-            file_accuracy = results.get('accuracy', 0.0)
             file_correct = results.get('correct', 0)
             file_count = results.get('total', 0)
         
@@ -60,7 +56,6 @@ def analyze_zoom_accuracy(*results_files):
                 zoom_key = zoom
             
             zoom_stats[zoom_key]['total'] += 1
-            zoom_stats[zoom_key]['results'].append(result)
             
             if is_correct:
                 zoom_stats[zoom_key]['correct'] += 1
@@ -104,13 +99,12 @@ def print_analysis_report(analysis):
     print(f"  Total Correct:  {analysis['total_correct']}/{analysis['total_count']}")
     print(f"  Zoom Levels:    {analysis['zoom_levels_count']}")
     
-    print(f"\nAccuracy by Zoom Level:")
-    print(f"{'Zoom Level':<12} {'Accuracy':<10} {'Correct':<8} {'Total':<8}")
-    print("-" * 40)
+    print(f"\n| Zoom Level | Accuracy | Correct | Total |")
+    print(f"|------------|----------|---------|-------|")
     
     for zoom_level, stats in analysis['zoom_accuracy'].items():
         zoom_str = str(zoom_level) if zoom_level != 'original' else 'original'
-        print(f"{zoom_str:<12} {stats['accuracy']:.4f}     {stats['correct']:<8} {stats['total']:<8}")
+        print(f"| {zoom_str:<10} | {stats['accuracy']:.4f}   | {stats['correct']:<7} | {stats['total']:<5} |")
     
     # Find best and worst performing zoom levels
     if len(analysis['zoom_accuracy']) > 1:
@@ -126,19 +120,15 @@ def print_analysis_report(analysis):
         print(f"  Difference: {diff:.4f} ({diff*100:.2f}%)")
 
 def main():
-    parser = argparse.ArgumentParser(description='Analyze zoom-level accuracy from evaluation results')
-    parser.add_argument('results_files', nargs='+',
-                       help='Path(s) to the evaluation results JSON file(s)')
-    parser.add_argument('--output', '-o', 
-                       help='Optional output file for detailed analysis (JSON format)')
-    parser.add_argument('--quiet', '-q', action='store_true',
-                       help='Only print summary, no detailed report')
-    
-    args = parser.parse_args()
+    # Hardcoded file paths - modify these to analyze different result files
+    results_files = [
+        "eval_results/covid19_tianchi_augmented_evaluation.json",
+        "eval_results/covid19_tianchi_evaluation.json"
+    ]
     
     # Analyze results
     try:
-        analysis = analyze_zoom_accuracy(*args.results_files)
+        analysis = analyze_zoom_accuracy(*results_files)
     except FileNotFoundError as e:
         print(f"Error: File not found: {e}")
         return 1
@@ -149,15 +139,8 @@ def main():
         print(f"Error analyzing results: {e}")
         return 1
     
-    # Print report unless quiet mode
-    if not args.quiet:
-        print_analysis_report(analysis)
-    
-    # Save detailed analysis if output file specified
-    if args.output:
-        with open(args.output, 'w') as f:
-            json.dump(analysis, f, indent=2)
-        print(f"\nDetailed analysis saved to: {args.output}")
+    # Print report
+    print_analysis_report(analysis)
     
     return 0
 

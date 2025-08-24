@@ -9,8 +9,20 @@ Update `data/augment/adjust_crop.py` to be able to do everything.
 - A new metadata file that is cloned from the original CT Scan json. 
     - Should have a different metadata attribute called `zoom`
 
+# Random
 
-# Project goals
+- Llava-Med surprisingly consistent
+    - Minor discrepancies with answers
+    - Does it use some sort of cropping strat? need to reread paper
+    - Should analyze fail cases when answers vary across zoom levels
+
+
+# TODOs
+
+- Need to run with med gemma
+- Prolly need to rerun chest ct scan with better eval script
+- Run with different contrast levels
+
 
 ## Zoom
 Do slight zooming in and see if that influences the image at all
@@ -34,3 +46,13 @@ In CT scan dataset, zoom was 99, 97, 95, 93, 91
 | 0.97       | 0.2974   |
 | 0.99       | 0.3088   |
 | 1.00       | 0.2859   |
+
+### Covid-19 tianchi (n=96)
+| Zoom Level | Accuracy |
+|------------|----------|
+| 0.91       | 0.4167   |
+| 0.93       | 0.4271   |
+| 0.95       | 0.4271   |
+| 0.97       | 0.4062   |
+| 0.99       | 0.4167   |
+| 1.0        | 0.4167   |
