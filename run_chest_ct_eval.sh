@@ -9,10 +9,10 @@
 MODEL_PATH="/home/log/Github/llava-med-v1.5-mistral-7b"
 IMAGE_FOLDER="data/OmniMedVQA"
 # QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan_augmented.json"
-QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan.json"
+QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan_augmented.json"
 # OUTPUT_FILE="eval_results/chest_ct_results_zoom.jsonl"
 OUTPUT_FILE="eval_results/chest_ct_results.jsonl"
-SAMPLE_RATIO=0.10
+SAMPLE_RATIO=0.01
 
 # Create output directory
 mkdir -p eval_results

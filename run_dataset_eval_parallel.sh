@@ -8,9 +8,9 @@ MODEL_PATH="/home/log/Github/llava-med-v1.5-mistral-7b"
 IMAGE_FOLDER="data/OmniMedVQA"
 # QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Covid-19 tianchi.json"
 # QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Covid-19 tianchi_augmented.json"
-QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan.json"
+QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan_augmented.json"
 # OUTPUT_FILE="eval_results/covid19_tianchi.jsonl_augmented"
-OUTPUT_FILE="eval_results/chest_ct_results2.jsonl"
+OUTPUT_FILE="eval_results/chest_ct_results_crop.jsonl"
 # OUTPUT_FILE="eval_results/covid19_tianchi_augmented.jsonl"
 SAMPLE_RATIO=1.0
 

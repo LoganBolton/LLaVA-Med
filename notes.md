@@ -56,3 +56,8 @@ In CT scan dataset, zoom was 99, 97, 95, 93, 91
 | 0.97       | 0.4062   |
 | 0.99       | 0.4167   |
 | 1.0        | 0.4167   |
+
+
+
+/home/log/Github/LLaVA-Med/data/OmniMedVQA/augmented/Images/Chest CT Scan/test/adenocarcinoma_left.lower.lobe_T2_N0_M0_Ib/000158_zoom_0.99.png
+/home/log/Github/LLaVA-Med/data/OmniMedVQA/Images/Chest CT Scan/test/adenocarcinoma_left.lower.lobe_T2_N0_M0_Ib/000158.png

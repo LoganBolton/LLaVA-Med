@@ -1,0 +1,63 @@
+{
+  "accuracy": 0.0,
+  "correct": 0,
+  "total": 5,
+  "gpu0_results": {
+    "accuracy": 0.0,
+    "correct": 0,
+    "total": 5,
+    "detailed_results": [
+      {
+        "question_id": "Chest CT Scan_0084_zoom_1_zoom_0.99",
+        "original_question_id": "Chest CT Scan_0084_zoom_1",
+        "zoom": 0.99,
+        "prompt": "What is the specific diagnosis for the cancer seen in the image?\nA) Mesothelioma of the left lower lobe, T2 N0 M0, Stage Ib\nB) Neuroendocrine tumor of the left upper lobe, T3 N0 M1, Stage III\nC) Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib\nD) Squamous cell carcinoma of the right upper lobe, T3 N1 M1, Stage IV\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib",
+        "model_response": "",
+        "correct": false
+      },
+      {
+        "question_id": "Chest CT Scan_0084_zoom_2_zoom_0.97",
+        "original_question_id": "Chest CT Scan_0084_zoom_2",
+        "zoom": 0.97,
+        "prompt": "What is the specific diagnosis for the cancer seen in the image?\nA) Mesothelioma of the left lower lobe, T2 N0 M0, Stage Ib\nB) Neuroendocrine tumor of the left upper lobe, T3 N0 M1, Stage III\nC) Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib\nD) Squamous cell carcinoma of the right upper lobe, T3 N1 M1, Stage IV\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib",
+        "model_response": "",
+        "correct": false
+      },
+      {
+        "question_id": "Chest CT Scan_0084_zoom_3_zoom_0.95",
+        "original_question_id": "Chest CT Scan_0084_zoom_3",
+        "zoom": 0.95,
+        "prompt": "What is the specific diagnosis for the cancer seen in the image?\nA) Mesothelioma of the left lower lobe, T2 N0 M0, Stage Ib\nB) Neuroendocrine tumor of the left upper lobe, T3 N0 M1, Stage III\nC) Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib\nD) Squamous cell carcinoma of the right upper lobe, T3 N1 M1, Stage IV\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib",
+        "model_response": "",
+        "correct": false
+      },
+      {
+        "question_id": "Chest CT Scan_0084_zoom_4_zoom_0.93",
+        "original_question_id": "Chest CT Scan_0084_zoom_4",
+        "zoom": 0.93,
+        "prompt": "What is the specific diagnosis for the cancer seen in the image?\nA) Mesothelioma of the left lower lobe, T2 N0 M0, Stage Ib\nB) Neuroendocrine tumor of the left upper lobe, T3 N0 M1, Stage III\nC) Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib\nD) Squamous cell carcinoma of the right upper lobe, T3 N1 M1, Stage IV\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib",
+        "model_response": "",
+        "correct": false
+      },
+      {
+        "question_id": "Chest CT Scan_0084_zoom_5_zoom_0.91",
+        "original_question_id": "Chest CT Scan_0084_zoom_5",
+        "zoom": 0.91,
+        "prompt": "What is the specific diagnosis for the cancer seen in the image?\nA) Mesothelioma of the left lower lobe, T2 N0 M0, Stage Ib\nB) Neuroendocrine tumor of the left upper lobe, T3 N0 M1, Stage III\nC) Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib\nD) Squamous cell carcinoma of the right upper lobe, T3 N1 M1, Stage IV\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "Adenocarcinoma of the left lower lobe, T2 N0 M0, Stage Ib",
+        "model_response": "",
+        "correct": false
+      }
+    ]
+  },
+  "gpu1_results": {
+    "accuracy": 0.0,
+    "correct": 0,
+    "total": 0,
+    "detailed_results": []
+  }
+}
