@@ -4,15 +4,12 @@
 # This script runs evaluation in parallel across multiple GPUs
 
 # Configuration
-MODEL_PATH="/home/log/Github/llava-med-v1.5-mistral-7b"
+MODEL_TYPE="medgemma"
+MODEL_NAME="google/medgemma-4b-it"
 IMAGE_FOLDER="data/OmniMedVQA"
-# QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Covid-19 tianchi.json"
-QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Covid-19 tianchi_augmented.json"
-# QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan_augmented.json"
-# OUTPUT_FILE="eval_results/covid19_tianchi.jsonl_augmented"
-# OUTPUT_FILE="eval_results/chest_ct_results_crop.jsonl"
-OUTPUT_FILE="eval_results/covid19_tianchi_crop.jsonl"
-SAMPLE_RATIO=1.0
+QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan.json"
+OUTPUT_FILE="eval_results/medgemma_chest_ct_0.01_test.jsonl"
+SAMPLE_RATIO=0.01
 
 # Calculate dataset split points
 echo "Calculating dataset split for parallel processing..."
@@ -40,7 +37,8 @@ echo "Starting parallel evaluation..."
 
 # Run on GPU 0 (first half)
 CUDA_VISIBLE_DEVICES=0 python llava/eval/eval_pattern_matching.py \
-    --model-path "$MODEL_PATH" \
+    --model-type "$MODEL_TYPE" \
+    --model "$MODEL_NAME" \
     --image-folder "$IMAGE_FOLDER" \
     --question-file "$QUESTION_FILE" \
     --answers-file "$OUTPUT_FILE" \
@@ -48,12 +46,12 @@ CUDA_VISIBLE_DEVICES=0 python llava/eval/eval_pattern_matching.py \
     --start-idx 0 \
     --end-idx $HALF_SIZE \
     --process-id "gpu0" \
-    --conv-mode "vicuna_v1" \
     --temperature 0.0 &
 
 # Run on GPU 1 (second half)  
 CUDA_VISIBLE_DEVICES=1 python llava/eval/eval_pattern_matching.py \
-    --model-path "$MODEL_PATH" \
+    --model-type "$MODEL_TYPE" \
+    --model "$MODEL_NAME" \
     --image-folder "$IMAGE_FOLDER" \
     --question-file "$QUESTION_FILE" \
     --answers-file "$OUTPUT_FILE" \
@@ -61,7 +59,6 @@ CUDA_VISIBLE_DEVICES=1 python llava/eval/eval_pattern_matching.py \
     --start-idx $HALF_SIZE \
     --end-idx $TOTAL_QUESTIONS \
     --process-id "gpu1" \
-    --conv-mode "vicuna_v1" \
     --temperature 0.0 &
 
 # Wait for both processes to complete

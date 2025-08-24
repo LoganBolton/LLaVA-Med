@@ -5,7 +5,7 @@ import json
 import random
 import re
 from tqdm import tqdm
-import shortuuid
+import uuid
 from pathlib import Path
 import difflib
 
@@ -17,7 +17,7 @@ from llava.mm_utils import tokenizer_image_token, get_model_name_from_path, Keyw
 
 from PIL import Image
 import math
-from transformers import set_seed, logging
+from transformers import set_seed, logging, pipeline
 
 logging.set_verbosity_error()
 
@@ -330,23 +330,10 @@ def evaluate_accuracy(predictions_file, questions):
     }
 
 
-def eval_model(args):
+def eval_medllava(args, questions):
     """
-    Evaluate LLaVA model on OmniMedVQA Chest CT Scan dataset.
+    Evaluate MedLLaVA model.
     """
-    set_seed(42)
-    
-    # Load questions and sample
-    print(f"Loading and sampling {args.sample_ratio*100}% of Chest CT Scan questions...")
-    questions = load_chest_ct_questions(
-        args.question_file, 
-        args.image_folder, 
-        args.sample_ratio,
-        args.start_idx,
-        args.end_idx
-    )
-    print(f"Loaded {len(questions)} questions for evaluation")
-    
     # Model
     disable_torch_init()
     model_path = os.path.expanduser(args.model_path)
@@ -363,7 +350,7 @@ def eval_model(args):
     os.makedirs(os.path.dirname(answers_file), exist_ok=True)
     
     # Generate predictions
-    print("Generating model predictions...")
+    print("Generating MedLLaVA predictions...")
     with open(answers_file, "w") as ans_file:
         for line in tqdm(questions):
             idx = line["question_id"]
@@ -406,14 +393,14 @@ def eval_model(args):
 
             outputs = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
 
-            ans_id = shortuuid.uuid()
+            ans_id = str(uuid.uuid4())[:8]
             result = {
                 "question_id": idx,
                 "prompt": cur_prompt,
                 "text": outputs,
                 "answer_id": ans_id,
                 "model_id": model_name,
-                "crop": line.get("crop"),  # Preserve crop metadata
+                "crop": line.get("crop"),
                 "metadata": {
                     "gt_answer": line["gt_answer"],
                     "options": line["options"]
@@ -421,6 +408,115 @@ def eval_model(args):
             }
             ans_file.write(json.dumps(result) + "\n")
             ans_file.flush()
+    
+    return answers_file
+
+
+def eval_medgemma(args, questions):
+    """
+    Evaluate MedGemma model.
+    """
+    # Load MedGemma pipeline
+    print("Loading MedGemma model...")
+    model_name = args.model if args.model else "google/medgemma-4b-it"
+    print(f"Using model: {model_name}")
+    
+    try:
+        pipe = pipeline(
+            "image-text-to-text",
+            model=model_name,
+            torch_dtype=torch.bfloat16,
+            device="cuda" if torch.cuda.is_available() else "cpu",
+            trust_remote_code=True,
+        )
+        print("✓ MedGemma model loaded successfully")
+    except Exception as e:
+        print(f"✗ Error loading MedGemma model: {e}")
+        print("\nPlease ensure you have:")
+        print("1. Accepted license: https://huggingface.co/google/medgemma-4b-it")
+        print("2. Logged in: huggingface-cli login")
+        print("3. Activated medgemma virtual environment")
+        exit(1)
+    
+    # Prepare output files
+    answers_file = os.path.expanduser(args.answers_file)
+    if args.process_id:
+        base, ext = os.path.splitext(answers_file)
+        answers_file = f"{base}_{args.process_id}{ext}"
+    os.makedirs(os.path.dirname(answers_file), exist_ok=True)
+    
+    # Generate predictions
+    print("Generating MedGemma predictions...")
+    with open(answers_file, "w") as ans_file:
+        for line in tqdm(questions):
+            idx = line["question_id"]
+            image_file = line["image"]
+            qs = line["text"].replace(DEFAULT_IMAGE_TOKEN, '').strip()
+            cur_prompt = qs
+            
+            # Load image
+            full_image_path = os.path.join(args.image_folder, image_file)
+            image = Image.open(full_image_path)
+            
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": qs},
+                        {"type": "image", "image": image},
+                    ],
+                }
+            ]
+            
+            try:
+                result = pipe(text=messages, generate_kwargs={"do_sample": False, "max_new_tokens": 512})
+                outputs = result[0]['generated_text'][-1]['content'].strip()
+            except Exception as e:
+                print(f"✗ Error processing {image_file}: {e}")
+                outputs = ""
+            
+            ans_id = str(uuid.uuid4())[:8]
+            result = {
+                "question_id": idx,
+                "prompt": cur_prompt,
+                "text": outputs,
+                "answer_id": ans_id,
+                "model_id": model_name,
+                "crop": line.get("crop"),
+                "metadata": {
+                    "gt_answer": line["gt_answer"],
+                    "options": line["options"]
+                }
+            }
+            ans_file.write(json.dumps(result) + "\n")
+            ans_file.flush()
+    
+    return answers_file
+
+
+def eval_model(args):
+    """
+    Evaluate model on OmniMedVQA Chest CT Scan dataset.
+    Supports both MedLLaVA and MedGemma models.
+    """
+    set_seed(42)
+    
+    # Load questions and sample
+    print(f"Loading and sampling {args.sample_ratio*100}% of Chest CT Scan questions...")
+    questions = load_chest_ct_questions(
+        args.question_file, 
+        args.image_folder, 
+        args.sample_ratio,
+        args.start_idx,
+        args.end_idx
+    )
+    print(f"Loaded {len(questions)} questions for evaluation")
+    
+    # Model selection with if-else switch
+    if args.model_type == "medgemma":
+        answers_file = eval_medgemma(args, questions)
+    else:  # Default to medllava
+        answers_file = eval_medllava(args, questions)
     
     # Evaluate accuracy
     print("Evaluating accuracy...")
@@ -443,8 +539,13 @@ def eval_model(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model-path", type=str, required=True, 
-                       help="Path to LLaVA model weights")
+    parser.add_argument("--model-type", type=str, default="medllava", 
+                       choices=["medllava", "medgemma"],
+                       help="Model type to use: medllava or medgemma (default: medllava)")
+    parser.add_argument("--model", type=str, default=None,
+                       help="Model name/path to use (e.g., google/medgemma-4b-it)")
+    parser.add_argument("--model-path", type=str, 
+                       help="Path to LLaVA model weights (required for medllava)")
     parser.add_argument("--model-base", type=str, default=None)
     parser.add_argument("--image-folder", type=str, required=True,
                        help="Path to OmniMedVQA Images folder")
@@ -466,4 +567,9 @@ if __name__ == "__main__":
                        help="Process identifier for output files (for parallel processing)")
     
     args = parser.parse_args()
+    
+    # Validate model-path requirement for medllava
+    if args.model_type == "medllava" and not args.model_path:
+        parser.error("--model-path is required when using --model-type medllava")
+    
     eval_model(args)

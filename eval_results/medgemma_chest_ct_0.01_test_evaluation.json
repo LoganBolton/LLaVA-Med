@@ -1,0 +1,91 @@
+{
+  "accuracy": 1.0,
+  "correct": 8,
+  "total": 8,
+  "gpu0_results": {
+    "accuracy": 1.0,
+    "correct": 4,
+    "total": 4,
+    "detailed_results": [
+      {
+        "question_id": "Chest CT Scan_0000",
+        "original_question_id": "Chest CT Scan_0000",
+        "crop": null,
+        "prompt": "What imaging technique was employed for capturing this image?\nA) Angiography\nB) Electrocardiogram (ECG)\nC) Mammogram\nD) CT\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "CT",
+        "model_response": "The image shows a cross-sectional view of the chest, with bones, lungs, and other structures visible. This is characteristic of a CT scan.\n\nA) CT",
+        "correct": true
+      },
+      {
+        "question_id": "Chest CT Scan_0001",
+        "original_question_id": "Chest CT Scan_0001",
+        "crop": null,
+        "prompt": "What modality is used to capture this image?\nA) CT\nB) X-ray\nC) Nuclear medicine scan\nD) PET scan\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "CT",
+        "model_response": "The image shows detailed cross-sectional anatomy of the chest, including the lungs, heart, and surrounding structures. This is characteristic of a CT scan.\n\nA) CT",
+        "correct": true
+      },
+      {
+        "question_id": "Chest CT Scan_0002",
+        "original_question_id": "Chest CT Scan_0002",
+        "crop": null,
+        "prompt": "What imaging technique is employed for obtaining this image?\nA) Mammogram\nB) Positron emission tomography (PET)\nC) CT\nD) Fluoroscopy\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "CT",
+        "model_response": "The image shows a cross-sectional view of the chest, with distinct anatomical structures like the lungs, heart, and major blood vessels. This is characteristic of a CT scan.\n\nA) CT",
+        "correct": true
+      },
+      {
+        "question_id": "Chest CT Scan_0003",
+        "original_question_id": "Chest CT Scan_0003",
+        "crop": null,
+        "prompt": "\"What imaging technique is utilized to obtain this image?\"\nA) Mammogram\nB) MRI\nC) CT\nD) Nuclear medicine scan\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "CT",
+        "model_response": "The image shows a cross-sectional view of the chest, with visible structures like the heart, lungs, and bones. This is characteristic of a CT scan.\n\nA) CT",
+        "correct": true
+      }
+    ]
+  },
+  "gpu1_results": {
+    "accuracy": 1.0,
+    "correct": 4,
+    "total": 4,
+    "detailed_results": [
+      {
+        "question_id": "Chest CT Scan_0004",
+        "original_question_id": "Chest CT Scan_0004",
+        "crop": null,
+        "prompt": "What imaging modality was employed to obtain this image?\nA) Electrocardiogram (ECG)\nB) Nuclear medicine scan\nC) Ultrasound\nD) CT\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "CT",
+        "model_response": "The image shows a cross-sectional view of the chest, with detailed structures like the heart, lungs, and bones. This is characteristic of a CT scan.\n\nD) CT",
+        "correct": true
+      },
+      {
+        "question_id": "Chest CT Scan_0005",
+        "original_question_id": "Chest CT Scan_0005",
+        "crop": null,
+        "prompt": "What imaging technique was utilized to acquire this picture?\nA) MRI\nB) Angiography\nC) Mammogram\nD) CT\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "CT",
+        "model_response": "The image shows a cross-sectional view of the chest, with clear visualization of the heart, lungs, and surrounding structures. This is characteristic of a CT scan.\n\nD) CT",
+        "correct": true
+      },
+      {
+        "question_id": "Chest CT Scan_0006",
+        "original_question_id": "Chest CT Scan_0006",
+        "crop": null,
+        "prompt": "What imaging modality is used to produce this image?\nA) Mammogram\nB) Angiography\nC) CT\nD) MRI\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "CT",
+        "model_response": "The image shows a cross-sectional view of the chest, with visible structures like the heart, lungs, and bones. This is characteristic of a CT scan.\n\nA) CT",
+        "correct": true
+      },
+      {
+        "question_id": "Chest CT Scan_0007",
+        "original_question_id": "Chest CT Scan_0007",
+        "crop": null,
+        "prompt": "What imaging technique was utilized for obtaining this image?\nA) CT\nB) Angiography\nC) X-ray\nD) Ultrasound\n\nYou may only choose ONE of the options. Think step by step and then answer with the option, e.g., ... A)",
+        "gt_answer": "CT",
+        "model_response": "The image shows detailed cross-sectional anatomy of the chest, including the lungs, heart, and major blood vessels. This is characteristic of a CT scan.\n\nA) CT",
+        "correct": true
+      }
+    ]
+  }
+}
