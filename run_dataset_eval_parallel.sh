@@ -2,14 +2,67 @@
 
 # Parallel OmniMedVQA Chest CT Scan Evaluation Script
 # This script runs evaluation in parallel across multiple GPUs
+# Automatically configures virtual environment based on model type
+#
+# Usage:
+#   1. Set MODEL_TYPE to "medllava" or "medgemma" below
+#   2. Run: ./run_dataset_eval_parallel.sh
+#
+# The script automatically handles:
+#   - Virtual environment activation/deactivation
+#   - Model-specific argument configuration  
+#   - Parallel GPU processing
+#   - Result merging and cleanup
 
 # Configuration
-MODEL_TYPE="medgemma"
-MODEL_NAME="google/medgemma-4b-it"
+MODEL_TYPE="medgemma"  # options: "medllava", "medgemma"
+MODEL_PATH="/home/log/Github/llava-med-v1.5-mistral-7b"  # Used for medllava
+MODEL_NAME="google/medgemma-4b-it"  # Used for medgemma
 IMAGE_FOLDER="data/OmniMedVQA"
+
 QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan.json"
-OUTPUT_FILE="eval_results/medgemma_chest_ct_0.01_test.jsonl"
+OUTPUT_FILE="eval_results/${MODEL_TYPE}_chest_ct_0.01_test.jsonl"
 SAMPLE_RATIO=0.01
+
+# Auto-configure environment based on model type
+if [ "$MODEL_TYPE" == "medgemma" ]; then
+    echo "🤖 Configuring environment for MedGemma..."
+    
+    # Check if we're already in the medgemma environment
+    if [[ "$VIRTUAL_ENV" != *"medgemma_env"* ]]; then
+        echo "🔄 Activating medgemma virtual environment..."
+        if [ -d "medgemma_env" ]; then
+            source medgemma_env/bin/activate
+            echo "✅ MedGemma environment activated"
+        else
+            echo "❌ Error: medgemma_env directory not found!"
+            echo "Please ensure the medgemma virtual environment is set up"
+            exit 1
+        fi
+    else
+        echo "✅ Already in MedGemma environment"
+    fi
+    
+elif [ "$MODEL_TYPE" == "medllava" ]; then
+    echo "🏥 Configuring environment for MedLLaVA..."
+    
+    # Deactivate any virtual environment and use base conda/system environment
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        echo "🔄 Deactivating virtual environment for MedLLaVA..."
+        deactivate 2>/dev/null || true
+        # Force reset environment variables
+        unset VIRTUAL_ENV
+        export PATH="/home/log/anaconda3/bin:$PATH"
+        echo "✅ Switched to base environment"
+    else
+        echo "✅ Already in base environment"
+    fi
+    
+else
+    echo "❌ Error: Unsupported MODEL_TYPE '$MODEL_TYPE'"
+    echo "Supported types: medllava, medgemma"
+    exit 1
+fi
 
 # Calculate dataset split points
 echo "Calculating dataset split for parallel processing..."
@@ -35,31 +88,63 @@ export PYTHONPATH="/home/log/Github/LLaVA-Med:$PYTHONPATH"
 
 echo "Starting parallel evaluation..."
 
+echo "🚀 Starting parallel evaluation with $MODEL_TYPE..."
+
 # Run on GPU 0 (first half)
-CUDA_VISIBLE_DEVICES=0 python llava/eval/eval_pattern_matching.py \
-    --model-type "$MODEL_TYPE" \
-    --model "$MODEL_NAME" \
-    --image-folder "$IMAGE_FOLDER" \
-    --question-file "$QUESTION_FILE" \
-    --answers-file "$OUTPUT_FILE" \
-    --sample-ratio $SAMPLE_RATIO \
-    --start-idx 0 \
-    --end-idx $HALF_SIZE \
-    --process-id "gpu0" \
-    --temperature 0.0 &
+if [ "$MODEL_TYPE" == "medgemma" ]; then
+    CUDA_VISIBLE_DEVICES=0 python llava/eval/eval_pattern_matching.py \
+        --model-type "$MODEL_TYPE" \
+        --model "$MODEL_NAME" \
+        --image-folder "$IMAGE_FOLDER" \
+        --question-file "$QUESTION_FILE" \
+        --answers-file "$OUTPUT_FILE" \
+        --sample-ratio $SAMPLE_RATIO \
+        --start-idx 0 \
+        --end-idx $HALF_SIZE \
+        --process-id "gpu0" \
+        --temperature 0.0 &
+elif [ "$MODEL_TYPE" == "medllava" ]; then
+    CUDA_VISIBLE_DEVICES=0 python llava/eval/eval_pattern_matching.py \
+        --model-type "$MODEL_TYPE" \
+        --model-path "$MODEL_PATH" \
+        --image-folder "$IMAGE_FOLDER" \
+        --question-file "$QUESTION_FILE" \
+        --answers-file "$OUTPUT_FILE" \
+        --sample-ratio $SAMPLE_RATIO \
+        --start-idx 0 \
+        --end-idx $HALF_SIZE \
+        --process-id "gpu0" \
+        --conv-mode "vicuna_v1" \
+        --temperature 0.0 &
+fi
 
 # Run on GPU 1 (second half)  
-CUDA_VISIBLE_DEVICES=1 python llava/eval/eval_pattern_matching.py \
-    --model-type "$MODEL_TYPE" \
-    --model "$MODEL_NAME" \
-    --image-folder "$IMAGE_FOLDER" \
-    --question-file "$QUESTION_FILE" \
-    --answers-file "$OUTPUT_FILE" \
-    --sample-ratio $SAMPLE_RATIO \
-    --start-idx $HALF_SIZE \
-    --end-idx $TOTAL_QUESTIONS \
-    --process-id "gpu1" \
-    --temperature 0.0 &
+if [ "$MODEL_TYPE" == "medgemma" ]; then
+    CUDA_VISIBLE_DEVICES=1 python llava/eval/eval_pattern_matching.py \
+        --model-type "$MODEL_TYPE" \
+        --model "$MODEL_NAME" \
+        --image-folder "$IMAGE_FOLDER" \
+        --question-file "$QUESTION_FILE" \
+        --answers-file "$OUTPUT_FILE" \
+        --sample-ratio $SAMPLE_RATIO \
+        --start-idx $HALF_SIZE \
+        --end-idx $TOTAL_QUESTIONS \
+        --process-id "gpu1" \
+        --temperature 0.0 &
+elif [ "$MODEL_TYPE" == "medllava" ]; then
+    CUDA_VISIBLE_DEVICES=1 python llava/eval/eval_pattern_matching.py \
+        --model-type "$MODEL_TYPE" \
+        --model-path "$MODEL_PATH" \
+        --image-folder "$IMAGE_FOLDER" \
+        --question-file "$QUESTION_FILE" \
+        --answers-file "$OUTPUT_FILE" \
+        --sample-ratio $SAMPLE_RATIO \
+        --start-idx $HALF_SIZE \
+        --end-idx $TOTAL_QUESTIONS \
+        --process-id "gpu1" \
+        --conv-mode "vicuna_v1" \
+        --temperature 0.0 &
+fi
 
 # Wait for both processes to complete
 wait
@@ -114,5 +199,6 @@ rm "$GPU0_FILE" "$GPU1_FILE" "$EVAL0_FILE" "$EVAL1_FILE"
 # Clean up merged results file, keep only evaluation
 rm "$OUTPUT_FILE"
 
-echo "Parallel evaluation complete! Results cleaned up."
-echo "Merged evaluation saved to: $MERGED_EVAL_FILE"
+echo "📊 Model used: $MODEL_TYPE"
+echo "🔧 Environment: $([ "$MODEL_TYPE" == "medgemma" ] && echo "medgemma_env virtual environment" || echo "base conda environment")"
+echo "📁 Results saved to: $MERGED_EVAL_FILE"
