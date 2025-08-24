@@ -10,7 +10,7 @@ IMAGE_FOLDER="data/OmniMedVQA"
 QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan_augmented.json"
 # OUTPUT_FILE="eval_results/chest_ct_results.jsonl"
 OUTPUT_FILE="eval_results/chest_ct_results_zoom.jsonl"
-SAMPLE_RATIO=0.004
+SAMPLE_RATIO=0.01
 
 # Calculate dataset split points
 echo "Calculating dataset split for parallel processing..."
