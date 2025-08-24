@@ -61,3 +61,33 @@ In CT scan dataset, zoom was 99, 97, 95, 93, 91
 
 /home/log/Github/LLaVA-Med/data/OmniMedVQA/augmented/Images/Chest CT Scan/test/adenocarcinoma_left.lower.lobe_T2_N0_M0_Ib/000158_zoom_0.99.png
 /home/log/Github/LLaVA-Med/data/OmniMedVQA/Images/Chest CT Scan/test/adenocarcinoma_left.lower.lobe_T2_N0_M0_Ib/000158.png
+
+## Crop
+### ct scan
+| crop Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 0.91       | 0.2939   | 256     | 871   |
+| 0.93       | 0.2985   | 260     | 871   |
+| 0.95       | 0.2997   | 261     | 871   |
+| 0.97       | 0.2997   | 261     | 871   |
+| 0.99       | 0.2928   | 255     | 871   |
+| 1.0        | 0.2939   | 256     | 871   |
+
+Agreement Analysis:
+Overall Agreement Rate: 0.9277 (92.77%)
+Questions with Full Agreement: 808
+
+### Covid-19 Tianchi
+| crop Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 0.91       | 0.4062   | 39      | 96    |
+| 0.93       | 0.4167   | 40      | 96    |
+| 0.95       | 0.4062   | 39      | 96    |
+| 0.97       | 0.4062   | 39      | 96    |
+| 0.99       | 0.4271   | 41      | 96    |
+| 1.0        | 0.4167   | 40      | 96    |
+
+Agreement Analysis:
+  Overall Agreement Rate: 0.9583 (95.83%)
+  Questions with Full Agreement: 92/96
+  Disagreement Rate: 0.0417 (4.17%)
