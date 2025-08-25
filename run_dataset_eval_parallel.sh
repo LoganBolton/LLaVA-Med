@@ -10,9 +10,9 @@ MODEL_NAME="google/medgemma-4b-it"  # Used for medgemma
 IMAGE_FOLDER="data/OmniMedVQA"
 
 DATA_TYPE="_contrast"
-QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan${DATA_TYPE}.json"
-OUTPUT_FILE="eval_results/${MODEL_TYPE}/chest_ct${DATA_TYPE}.jsonl"
-SAMPLE_RATIO=0.004
+QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Covid-19 tianchi${DATA_TYPE}.json"
+OUTPUT_FILE="eval_results/${MODEL_TYPE}/covid19_tianchi${DATA_TYPE}.jsonl"
+SAMPLE_RATIO=1.0
 
 # Auto-configure environment based on model type
 if [ "$MODEL_TYPE" == "medgemma" ]; then

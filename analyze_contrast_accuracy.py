@@ -85,6 +85,30 @@ def analyze_contrast_accuracy(*results_files):
     # Sort contrast levels (numeric order)
     sorted_contrast_accuracy = dict(sorted(contrast_accuracy.items(), key=lambda x: float(x[0])))
     
+    # Calculate agreement rates between base (1.0) and other contrast levels
+    base_contrast = 1.0
+    contrast_levels = sorted(contrast_stats.keys())
+    base_vs_others_agreement = {}
+    
+    for contrast_level in contrast_levels:
+        if contrast_level != base_contrast:
+            pair_key = f"1.0 vs {contrast_level}"
+            questions_compared = 0
+            questions_agreed = 0
+            
+            for base_id, contrast_results in all_question_results.items():
+                if base_contrast in contrast_results and contrast_level in contrast_results:
+                    questions_compared += 1
+                    if contrast_results[base_contrast] == contrast_results[contrast_level]:
+                        questions_agreed += 1
+            
+            agreement_rate = questions_agreed / questions_compared if questions_compared > 0 else 0.0
+            base_vs_others_agreement[pair_key] = {
+                'agreement_rate': agreement_rate,
+                'questions_agreed': questions_agreed,
+                'questions_compared': questions_compared
+            }
+    
     # Calculate overall agreement rate (percentage of questions where ALL contrast levels agree)
     total_questions = 0
     questions_with_full_agreement = 0
@@ -109,7 +133,8 @@ def analyze_contrast_accuracy(*results_files):
         'agreement_analysis': {
             'overall_agreement_rate': overall_agreement_rate,
             'questions_with_full_agreement': questions_with_full_agreement,
-            'total_questions_compared': total_questions
+            'total_questions_compared': total_questions,
+            'base_vs_others_agreement': base_vs_others_agreement
         }
     }
     
@@ -117,10 +142,6 @@ def analyze_contrast_accuracy(*results_files):
 
 def print_analysis_report(analysis):
     """Print a formatted analysis report."""
-    print("=" * 60)
-    print("contrast LEVEL ACCURACY ANALYSIS")
-    print("=" * 60)
-    
     print(f"\nOverall Results:")
     print(f"  Total Accuracy: {analysis['total_accuracy']:.4f}")
     print(f"  Total Correct:  {analysis['total_correct']}/{analysis['total_count']}")
@@ -139,31 +160,53 @@ def print_analysis_report(analysis):
         print(f"\nAgreement Analysis:")
         print(f"  Overall Agreement Rate: {agreement['overall_agreement_rate']:.4f} ({agreement['overall_agreement_rate']*100:.2f}%)")
         print(f"  Questions with Full Agreement: {agreement['questions_with_full_agreement']}/{agreement['total_questions_compared']}")
-        disagreement_rate = 1 - agreement['overall_agreement_rate']
-        print(f"  Disagreement Rate: {disagreement_rate:.4f} ({disagreement_rate*100:.2f}%)")
+        
+        # Print base vs other contrast agreement rates
+        if 'base_vs_others_agreement' in agreement and agreement['base_vs_others_agreement']:
+            print(f"\nBase (1.0) vs Other Contrast Agreement Rates:")
+            print(f"| Contrast Pair          | Agreement | Agreed/Total |")
+            print(f"|------------------------|-----------|--------------|")
+            
+            for pair, stats in agreement['base_vs_others_agreement'].items():
+                agreement_rate = stats['agreement_rate']
+                agreed = stats['questions_agreed']
+                total = stats['questions_compared']
+                print(f"| {pair:<20} | {agreement_rate:.4f}    | {agreed:>3}/{total:<8} |")
 
 def main():
-    # Hardcoded file paths - modify these to analyze different result files
-    results_files = [
-        "/home/log/Github/LLaVA-Med/eval_results/medgemma/chest_ct_contrast_evaluation.json",
-        "/home/log/Github/LLaVA-Med/eval_results/medgemma/chest_ct_evaluation.json"
-    ]
+    model_types = ["medgemma", "medllava"]   # Hardcoded file paths - modify these to analyze different result files
+    datasets = ["chest_ct", "covid19_tianchi"]
+    data_types = ["_contrast"]
+    # results_files = [
+    #     "/home/log/Github/LLaVA-Med/eval_results/medgemma/covid19_tianchi/covid19_tianchi_contrast_evaluation.json",
+    #     "/home/log/Github/LLaVA-Med/eval_results/medgemma/covid19_tianchi/covid19_tianchi_evaluation.json"
+    # ]
+    for model_type in model_types:
+        for dataset in datasets:
+            for data_type in data_types:
+                results_files = [
+                    f"/home/log/Github/LLaVA-Med/eval_results/{model_type}/{dataset}/{dataset}{data_type}_evaluation.json",
+                    f"/home/log/Github/LLaVA-Med/eval_results/{model_type}/{dataset}/{dataset}_evaluation.json"
+                ]
+                try:
+                    analysis = analyze_contrast_accuracy(*results_files)
+                except FileNotFoundError as e:
+                    print(f"Error: File not found: {e}")
+                    return 1
+                except json.JSONDecodeError as e:
+                    print(f"Error: Invalid JSON in file: {e}")
+                    return 1
+                except Exception as e:
+                    print(f"Error analyzing results: {e}")
+                    return 1
+                
+                
+                print("=" * 60)
+                print(f"{model_type} {dataset} {data_type} LEVEL ACCURACY ANALYSIS")
+                print("=" * 60)
     
-    # Analyze results
-    try:
-        analysis = analyze_contrast_accuracy(*results_files)
-    except FileNotFoundError as e:
-        print(f"Error: File not found: {e}")
-        return 1
-    except json.JSONDecodeError as e:
-        print(f"Error: Invalid JSON in file: {e}")
-        return 1
-    except Exception as e:
-        print(f"Error analyzing results: {e}")
-        return 1
-    
-    # Print report
-    print_analysis_report(analysis)
+                print_analysis_report(analysis)
+                print("\n"*5)
     
     return 0
 
