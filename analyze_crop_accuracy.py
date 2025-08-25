@@ -145,8 +145,8 @@ def print_analysis_report(analysis):
 def main():
     # Hardcoded file paths - modify these to analyze different result files
     results_files = [
-        "/home/log/Github/LLaVA-Med/eval_results/covid19_tianchi_crop_evaluation.json",
-        "/home/log/Github/LLaVA-Med/eval_results/covid19_tianchi/covid19_tianchi_evaluation.json"
+        "/home/log/Github/LLaVA-Med/eval_results/medgemma/chest_ct_crop_evaluation.json",
+        "/home/log/Github/LLaVA-Med/eval_results/medgemma/chest_ct_evaluation.json"
     ]
     
     # Analyze results

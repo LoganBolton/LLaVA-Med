@@ -156,6 +156,7 @@ def load_chest_ct_questions(data_file, image_base_path, sample_ratio=0.1, start_
             'text': question_text,
             'gt_answer': q['gt_answer'],
             'crop': q.get('crop'),  # Preserve crop metadata
+            'contrast': q.get('contrast'),  # Preserve contrast metadata
             'options': {
                 'A': q.get('option_A', ''),
                 'B': q.get('option_B', ''),
@@ -255,14 +256,17 @@ def evaluate_accuracy(predictions_file, questions):
         for line in f:
             pred = json.loads(line.strip())
             
-            # Create unique key using question_id + crop (if available)
+            # Create unique key using question_id + crop + contrast (if available)
             question_id = pred['question_id']
             crop = pred.get('crop', None)  # Handle cases where crop might not exist
+            contrast = pred.get('contrast', None)  # Handle cases where contrast might not exist
             
+            key_parts = [question_id]
             if crop is not None:
-                unique_key = f"{question_id}_crop_{crop}"
-            else:
-                unique_key = question_id
+                key_parts.append(f"crop_{crop}")
+            if contrast is not None:
+                key_parts.append(f"contrast_{contrast}")
+            unique_key = "_".join(key_parts)
                 
             predictions[unique_key] = pred
             
@@ -271,11 +275,14 @@ def evaluate_accuracy(predictions_file, questions):
             for q in questions:
                 q_id = q['question_id']
                 q_crop = q.get('crop', None)
+                q_contrast = q.get('contrast', None)
                 
+                q_key_parts = [q_id]
                 if q_crop is not None:
-                    q_unique_key = f"{q_id}_crop_{q_crop}"
-                else:
-                    q_unique_key = q_id
+                    q_key_parts.append(f"crop_{q_crop}")
+                if q_contrast is not None:
+                    q_key_parts.append(f"contrast_{q_contrast}")
+                q_unique_key = "_".join(q_key_parts)
                     
                 if q_unique_key == unique_key:
                     question_data = q
@@ -286,6 +293,7 @@ def evaluate_accuracy(predictions_file, questions):
                     'question_id': unique_key,  # Use unique key as question_id
                     'original_question_id': question_id,  # Keep original for reference
                     'crop': crop,  # Keep crop metadata
+                    'contrast': contrast,  # Keep contrast metadata
                     'model_pred': pred['text'],
                     'gt_answer': question_data['gt_answer'],
                     'option_A': question_data['options']['A'],
@@ -316,6 +324,7 @@ def evaluate_accuracy(predictions_file, questions):
             'question_id': data['question_id'],  # This is now the unique key
             'original_question_id': data.get('original_question_id', data['question_id']),
             'crop': data.get('crop'),
+            'contrast': data.get('contrast'),
             'prompt': prompt,
             'gt_answer': data['gt_answer'],
             'model_response': data['model_pred'],
@@ -401,6 +410,7 @@ def eval_medllava(args, questions):
                 "answer_id": ans_id,
                 "model_id": model_name,
                 "crop": line.get("crop"),
+                "contrast": line.get("contrast"),
                 "metadata": {
                     "gt_answer": line["gt_answer"],
                     "options": line["options"]
@@ -483,6 +493,7 @@ def eval_medgemma(args, questions):
                 "answer_id": ans_id,
                 "model_id": model_name,
                 "crop": line.get("crop"),
+                "contrast": line.get("contrast"),
                 "metadata": {
                     "gt_answer": line["gt_answer"],
                     "options": line["options"]

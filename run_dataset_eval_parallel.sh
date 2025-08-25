@@ -3,26 +3,16 @@
 # Parallel OmniMedVQA Chest CT Scan Evaluation Script
 # This script runs evaluation in parallel across multiple GPUs
 # Automatically configures virtual environment based on model type
-#
-# Usage:
-#   1. Set MODEL_TYPE to "medllava" or "medgemma" below
-#   2. Run: ./run_dataset_eval_parallel.sh
-#
-# The script automatically handles:
-#   - Virtual environment activation/deactivation
-#   - Model-specific argument configuration  
-#   - Parallel GPU processing
-#   - Result merging and cleanup
 
-# Configuration
-MODEL_TYPE="medgemma"  # options: "medllava", "medgemma"
+MODEL_TYPE="medllava"  # options: "medllava", "medgemma"
 MODEL_PATH="/home/log/Github/llava-med-v1.5-mistral-7b"  # Used for medllava
 MODEL_NAME="google/medgemma-4b-it"  # Used for medgemma
 IMAGE_FOLDER="data/OmniMedVQA"
 
-QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan.json"
-OUTPUT_FILE="eval_results/${MODEL_TYPE}_chest_ct_0.01_test.jsonl"
-SAMPLE_RATIO=0.01
+DATA_TYPE="_contrast"
+QUESTION_FILE="data/OmniMedVQA/QA_information/Open-access/Chest CT Scan${DATA_TYPE}.json"
+OUTPUT_FILE="eval_results/${MODEL_TYPE}/chest_ct${DATA_TYPE}.jsonl"
+SAMPLE_RATIO=0.004
 
 # Auto-configure environment based on model type
 if [ "$MODEL_TYPE" == "medgemma" ]; then
