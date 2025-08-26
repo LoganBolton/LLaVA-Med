@@ -64,7 +64,7 @@ def analyze_contrast_accuracy(*results_files):
                 contrast_stats[contrast_key]['correct'] += 1
             
             # Store for agreement analysis - extract base question ID
-            original_question_id = result.get('original_question_id', '')
+            original_question_id = result.get('original_question_id', result.get('question_id', ''))
             base_id = original_question_id.split('_contrast_')[0] if '_contrast_' in original_question_id else original_question_id
             all_question_results[base_id][contrast_key] = is_correct
     
