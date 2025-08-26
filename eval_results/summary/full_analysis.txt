@@ -1,0 +1,320 @@
+============================================================
+medgemma chest_ct _contrast LEVEL ACCURACY ANALYSIS
+============================================================
+
+Overall Results:
+  Total Accuracy: 0.3576
+  Total Correct:  1869/5226
+  Contrast Levels:    6
+
+| Contrast Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 1.0        | 0.3536   | 308     | 871   |
+| 1.05       | 0.3605   | 314     | 871   |
+| 1.1        | 0.3536   | 308     | 871   |
+| 1.15       | 0.3571   | 311     | 871   |
+| 1.2        | 0.3594   | 313     | 871   |
+| 1.25       | 0.3617   | 315     | 871   |
+
+Unanimous Agreement Rate Across Settings: 0.5786 (57.86%)
+
+Base (1.0) vs Other Contrast Agreement Rates:
+| Contrast Pair          | Agreement | Agreed/Total |
+|------------------------|-----------|--------------|
+| 1.0 vs 1.05          | 0.8278    | 721/871      |
+| 1.0 vs 1.1           | 0.7750    | 675/871      |
+| 1.0 vs 1.15          | 0.7945    | 692/871      |
+| 1.0 vs 1.2           | 0.7876    | 686/871      |
+| 1.0 vs 1.25          | 0.7991    | 696/871      |
+
+
+
+
+
+
+============================================================
+medgemma chest_ct _crop LEVEL ACCURACY ANALYSIS
+============================================================
+
+Overall Results:
+  Total Accuracy: 0.3517
+  Total Correct:  1838/5226
+  Crop Levels:    6
+
+| Crop Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 0.91       | 0.3387   | 295     | 871   |
+| 0.93       | 0.3617   | 315     | 871   |
+| 0.95       | 0.3387   | 295     | 871   |
+| 0.97       | 0.3536   | 308     | 871   |
+| 0.99       | 0.3639   | 317     | 871   |
+| 1.0        | 0.3536   | 308     | 871   |
+
+Unanimous Agreement Rate Across Settings: 0.4834 (48.34%)
+
+Base (1.0) vs Other Crop Agreement Rates:
+| Crop Pair          | Agreement | Agreed/Total |
+|------------------------|-----------|--------------|
+| 1.0 vs 0.91          | 0.7761    | 676/871      |
+| 1.0 vs 0.93          | 0.7417    | 646/871      |
+| 1.0 vs 0.95          | 0.7715    | 672/871      |
+| 1.0 vs 0.97          | 0.7681    | 669/871      |
+| 1.0 vs 0.99          | 0.7715    | 672/871      |
+
+
+
+
+
+
+============================================================
+medgemma covid19_tianchi _contrast LEVEL ACCURACY ANALYSIS
+============================================================
+
+Overall Results:
+  Total Accuracy: 0.6007
+  Total Correct:  346/576
+  Contrast Levels:    6
+
+| Contrast Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 1.0        | 0.6250   | 60      | 96    |
+| 1.05       | 0.5938   | 57      | 96    |
+| 1.1        | 0.6042   | 58      | 96    |
+| 1.15       | 0.6042   | 58      | 96    |
+| 1.2        | 0.5833   | 56      | 96    |
+| 1.25       | 0.5938   | 57      | 96    |
+
+Unanimous Agreement Rate Across Settings: 0.7917 (79.17%)
+
+Base (1.0) vs Other Contrast Agreement Rates:
+| Contrast Pair          | Agreement | Agreed/Total |
+|------------------------|-----------|--------------|
+| 1.0 vs 1.05          | 0.8854    |  85/96       |
+| 1.0 vs 1.1           | 0.8750    |  84/96       |
+| 1.0 vs 1.15          | 0.8958    |  86/96       |
+| 1.0 vs 1.2           | 0.8958    |  86/96       |
+| 1.0 vs 1.25          | 0.9479    |  91/96       |
+
+
+
+
+
+
+============================================================
+medgemma covid19_tianchi _crop LEVEL ACCURACY ANALYSIS
+============================================================
+
+Overall Results:
+  Total Accuracy: 0.5990
+  Total Correct:  345/576
+  Crop Levels:    6
+
+| Crop Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 0.91       | 0.5729   | 55      | 96    |
+| 0.93       | 0.5521   | 53      | 96    |
+| 0.95       | 0.6562   | 63      | 96    |
+| 0.97       | 0.5833   | 56      | 96    |
+| 0.99       | 0.6042   | 58      | 96    |
+| 1.0        | 0.6250   | 60      | 96    |
+
+Unanimous Agreement Rate Across Settings: 0.6875 (68.75%)
+
+Base (1.0) vs Other Crop Agreement Rates:
+| Crop Pair          | Agreement | Agreed/Total |
+|------------------------|-----------|--------------|
+| 1.0 vs 0.91          | 0.8021    |  77/96       |
+| 1.0 vs 0.93          | 0.8021    |  77/96       |
+| 1.0 vs 0.95          | 0.8646    |  83/96       |
+| 1.0 vs 0.97          | 0.8958    |  86/96       |
+| 1.0 vs 0.99          | 0.8542    |  82/96       |
+
+
+
+
+
+
+============================================================
+medllava chest_ct _contrast LEVEL ACCURACY ANALYSIS
+============================================================
+
+Overall Results:
+  Total Accuracy: 0.2935
+  Total Correct:  1534/5226
+  Contrast Levels:    6
+
+| Contrast Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 1.0        | 0.2859   | 249     | 871   |
+| 1.05       | 0.2939   | 256     | 871   |
+| 1.1        | 0.2951   | 257     | 871   |
+| 1.15       | 0.2997   | 261     | 871   |
+| 1.2        | 0.2916   | 254     | 871   |
+| 1.25       | 0.2951   | 257     | 871   |
+
+Unanimous Agreement Rate Across Settings: 0.6877 (68.77%)
+
+Base (1.0) vs Other Contrast Agreement Rates:
+| Contrast Pair          | Agreement | Agreed/Total |
+|------------------------|-----------|--------------|
+| 1.0 vs 1.05          | 0.7118    | 620/871      |
+| 1.0 vs 1.1           | 0.7153    | 623/871      |
+| 1.0 vs 1.15          | 0.7153    | 623/871      |
+| 1.0 vs 1.2           | 0.7141    | 622/871      |
+| 1.0 vs 1.25          | 0.7153    | 623/871      |
+
+
+
+
+
+
+============================================================
+medllava chest_ct _crop LEVEL ACCURACY ANALYSIS
+============================================================
+
+Overall Results:
+  Total Accuracy: 0.2951
+  Total Correct:  1542/5226
+  Crop Levels:    6
+
+| Crop Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 0.91       | 0.2939   | 256     | 871   |
+| 0.93       | 0.2985   | 260     | 871   |
+| 0.95       | 0.2997   | 261     | 871   |
+| 0.97       | 0.2997   | 261     | 871   |
+| 0.99       | 0.2928   | 255     | 871   |
+| 1.0        | 0.2859   | 249     | 871   |
+
+Unanimous Agreement Rate Across Settings: 0.6900 (69.00%)
+
+Base (1.0) vs Other Crop Agreement Rates:
+| Crop Pair          | Agreement | Agreed/Total |
+|------------------------|-----------|--------------|
+| 1.0 vs 0.91          | 0.7210    | 628/871      |
+| 1.0 vs 0.93          | 0.7187    | 626/871      |
+| 1.0 vs 0.95          | 0.7153    | 623/871      |
+| 1.0 vs 0.97          | 0.7245    | 631/871      |
+| 1.0 vs 0.99          | 0.7222    | 629/871      |
+
+
+
+
+
+
+============================================================
+medllava covid19_tianchi _contrast LEVEL ACCURACY ANALYSIS
+============================================================
+
+Overall Results:
+  Total Accuracy: 0.4271
+  Total Correct:  246/576
+  Contrast Levels:    6
+
+| Contrast Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 1.0        | 0.4167   | 40      | 96    |
+| 1.05       | 0.4271   | 41      | 96    |
+| 1.1        | 0.4375   | 42      | 96    |
+| 1.15       | 0.4271   | 41      | 96    |
+| 1.2        | 0.4271   | 41      | 96    |
+| 1.25       | 0.4271   | 41      | 96    |
+
+Unanimous Agreement Rate Across Settings: 0.9688 (96.88%)
+
+Base (1.0) vs Other Contrast Agreement Rates:
+| Contrast Pair          | Agreement | Agreed/Total |
+|------------------------|-----------|--------------|
+| 1.0 vs 1.05          | 0.9896    |  95/96       |
+| 1.0 vs 1.1           | 0.9792    |  94/96       |
+| 1.0 vs 1.15          | 0.9896    |  95/96       |
+| 1.0 vs 1.2           | 0.9896    |  95/96       |
+| 1.0 vs 1.25          | 0.9896    |  95/96       |
+
+
+
+
+
+
+============================================================
+medllava covid19_tianchi _crop LEVEL ACCURACY ANALYSIS
+============================================================
+
+Overall Results:
+  Total Accuracy: 0.4132
+  Total Correct:  238/576
+  Crop Levels:    6
+
+| Crop Level | Accuracy | Correct | Total |
+|------------|----------|---------|-------|
+| 0.91       | 0.4062   | 39      | 96    |
+| 0.93       | 0.4167   | 40      | 96    |
+| 0.95       | 0.4062   | 39      | 96    |
+| 0.97       | 0.4062   | 39      | 96    |
+| 0.99       | 0.4271   | 41      | 96    |
+| 1.0        | 0.4167   | 40      | 96    |
+
+Unanimous Agreement Rate Across Settings: 0.9583 (95.83%)
+
+Base (1.0) vs Other Crop Agreement Rates:
+| Crop Pair          | Agreement | Agreed/Total |
+|------------------------|-----------|--------------|
+| 1.0 vs 0.91          | 0.9896    |  95/96       |
+| 1.0 vs 0.93          | 0.9583    |  92/96       |
+| 1.0 vs 0.95          | 0.9896    |  95/96       |
+| 1.0 vs 0.97          | 0.9896    |  95/96       |
+| 1.0 vs 0.99          | 0.9896    |  95/96       |
+
+
+
+
+
+
+================================================================================
+WEIGHTED AVERAGE RESULTS (chest_ct: 871 samples, covid19_tianchi: 96 samples)
+================================================================================
+
+Crop Accuracy (Weighted Average)
+Crop Level | MedGemma | MedLLaVA
+---------------|----------|----------
+0.91           | 0.3619   | 0.3051   |
+0.93           | 0.3806   | 0.3102   |
+0.95           | 0.3702   | 0.3102   |
+0.97           | 0.3764   | 0.3102   |
+0.99           | 0.3878   | 0.3061   |
+1.0            | 0.3806   | 0.2989   |
+
+Contrast Accuracy (Weighted Average)
+Contrast Level | MedGemma | MedLLaVA
+---------------|----------|----------
+1.0            | 0.3806   | 0.2989   |
+1.05           | 0.3837   | 0.3071   |
+1.1            | 0.3785   | 0.3092   |
+1.15           | 0.3816   | 0.3123   |
+1.2            | 0.3816   | 0.3051   |
+1.25           | 0.3847   | 0.3082   |
+
+Crop Agreement Rates (Base 1.0 vs Other Levels, Weighted Average)
+Crop Pair      | MedGemma | MedLLaVA
+---------------|----------|----------
+1.0 vs 0.91    | 0.7787   | 0.7477   |
+1.0 vs 0.93    | 0.7477   | 0.7425   |
+1.0 vs 0.95    | 0.7808   | 0.7425   |
+1.0 vs 0.97    | 0.7808   | 0.7508   |
+1.0 vs 0.99    | 0.7797   | 0.7487   |
+
+Contrast Agreement Rates (Base 1.0 vs Other Levels, Weighted Average)
+Contrast Pair      | MedGemma | MedLLaVA
+---------------|----------|----------
+1.0 vs 1.05    | 0.8335   | 0.7394   |
+1.0 vs 1.1     | 0.7849   | 0.7415   |
+1.0 vs 1.15    | 0.8046   | 0.7425   |
+1.0 vs 1.2     | 0.7983   | 0.7415   |
+1.0 vs 1.25    | 0.8139   | 0.7425   |
+
+
+Saved crop charts to eval_results/summary/
+Saved contrast charts to eval_results/summary/
+All charts saved to: eval_results/summary/
+
+
